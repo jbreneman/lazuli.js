@@ -18,13 +18,12 @@ function Lazuli() {
 		finished: null
 	};
 
-	[].slice.call(arguments).forEach((arg) => {
+	[...arguments].forEach((arg) => {
 		if(typeof arg === 'string') options.className = arg;
 		if(isObject(arg)) options = Object.assign({}, options, arg);
 	});
 
 	this.options = options;
-	this.loaded = 0;
 	this.init(options);
 };
 
@@ -136,7 +135,7 @@ Lazuli.prototype = {
 		let loaded = [];
 
 		// Convert images domlist to array and fire off load requests
-		[].slice.call(images).forEach((image) => {
+		[...images].forEach((image) => {
 			// Push all promises into an array so we can watch when all are finished
 			loaded.push(this._load(image)
 				.then((loaded) => {
