@@ -1,7 +1,12 @@
+import Promise from 'promise-polyfill';
 import isObject from 'isobject';
 import 'es6-object-assign/auto';
 
 'use strict';
+
+if (!window.Promise) {
+	window.Promise = Promise;
+}
 
 function Lazuli() {
 	let options = {
@@ -27,36 +32,56 @@ Lazuli.prototype = {
 	//
 	// Private
 	//
-	_load: function(image, onload) {
-		const loader = document.createElement('img');
-		const self = this;
+	_loadImage: function(image) {
+		return new Promise((resolve, reject) => {
+			const loader = document.createElement('img');
 
-		loader.addEventListener('load', function() {
-			self.loaded++;
-			if (typeof onload === 'function') onload(this, image);
+			loader.addEventListener('load', function() {
+				this.removeEventListener('load', this);
+				resolve(this);
+			});
 
-			// Fire user defined callbacks and add loaded class
-			if(typeof self.options.load === 'function') self.options.load({ image: image });
-			if(self.loaded === self.total && typeof self.options.finished === 'function') self.options.finished({ image: image });
-			image.classList.add('loaded');
+			loader.addEventListener('error', function() {
+				this.removeEventListener('error', this);
+				reject(this);
+			});
 
-			// Clean up this listener and dom
-			this.removeEventListener('load', this);
 			for (const key in Object.assign({}, image.dataset)) {
-				delete image.dataset[key];
+				// Loop through dataset and move properties over to our loader
+				// leaving the src property for last since we want that to go last
+				if (key !== 'src') {
+					loader.setAttribute(key, image.dataset[key]);
+				}
 			}
+
+			// Kick off loading the image
+			loader.setAttribute('src', image.dataset.src);
 		});
+	},
 
-		for (const key in Object.assign({}, image.dataset)) {
-			// Loop through dataset and move properties over to our loader
-			// leaving the src property for last since we want that to go last
-			if (key !== 'src') {
-				loader.setAttribute(key, image.dataset[key]);
-			}
-		}
+	_load: function(image) {
+		return new Promise((resolve, reject) => {
+			this._loadImage(image)
+				.then((loaded)=> {
 
-		// Kick off loading the image
-		loader.setAttribute('src', image.dataset.src);
+					// Fire user defined callbacks and add loaded class
+					if(typeof this.options.load === 'function') this.options.load({ image: image });
+					image.classList.add('loaded');
+
+					// Clean up dom
+					for (const key in Object.assign({}, image.dataset)) {
+						delete image.dataset[key];
+					}
+
+					return loaded;
+				})
+				.then((loaded) => {
+					resolve(loaded);
+				})
+				.catch((err) => {
+					reject(err);
+				});
+		});
 	},
 
 	_createInside: function(image) {
@@ -82,13 +107,13 @@ Lazuli.prototype = {
 		return element;
 	},
 
-	_background: function(_this, image) {
+	_background: function(image, loaded) {
 		if (this.options.fancy) {
 			let computed = window.getComputedStyle(image, null);
 			if (computed.position === 'static') { image.style.position = 'relative'; }
 			if (computed.zIndex === 'auto') { image.style.zIndex = '0'; }
 			
-			const child = this._createInside(_this.currentSrc || _this.src);
+			const child = this._createInside(loaded.currentSrc || loaded.src);
 			image.appendChild(child);
 
 			// Force a redraw
@@ -99,12 +124,8 @@ Lazuli.prototype = {
 				image.style.backgroundImage = 'none';
 			}, 240);
 		} else {
-			image.style.backgroundImage = `url(${ _this.currentSrc || _this.src })`;
+			image.style.backgroundImage = `url(${ loaded.currentSrc || loaded.src })`;
 		}
-	},
-
-	_img: function(_this, image) {
-		image.src = _this.currentSrc || _this.src;
 	},
 
 	//
@@ -112,17 +133,33 @@ Lazuli.prototype = {
 	//
 	init: function(options) {
 		const images = document.querySelectorAll(`.${ options.className }`);
+		let loaded = [];
 
-		this.total = images.length;
-
+		// Convert images domlist to array and fire off load requests
 		[].slice.call(images).forEach((image) => {
-			if(image.tagName === 'IMG') {
-				this._load(image, this._img);
-			} else {
-				this._load(image, this._background.bind(this));
-			}
-			
+			// Push all promises into an array so we can watch when all are finished
+			loaded.push(this._load(image)
+				.then((loaded) => {
+					if(image.tagName === 'IMG') {
+						image.src = loaded.currentSrc || loaded.src;
+					} else {
+						this._background(image, loaded);
+					}
+				})
+				.catch((err) => {
+					console.error('Failed to load image: ', err);
+				})
+			);
 		});
+
+		// Fire off the final callback whenever all images are loaded
+		Promise.all(loaded)
+			.then(res => { 
+				if(typeof this.options.finished === 'function') this.options.finished({ images: res });
+			})
+			.catch(err => { 
+				console.error('Some images failed to load', err);
+			});
 	}
 };
 
