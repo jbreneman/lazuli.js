@@ -13,7 +13,7 @@ function Lazuli() {
 		selector: '.lazuli',
 		background: true,
 		img: true,
-		fancy: true,
+		fancy: false,
 		load: null,
 		finished: null
 	};
@@ -154,7 +154,7 @@ Lazuli.prototype = {
 		// Fire off the final callback whenever all images are loaded
 		Promise.all(loaded)
 			.then(res => { 
-				if(typeof this.options.finished === 'function') this.options.finished({ images: res });
+				if(typeof this.options.finished === 'function') this.options.finished({ images: [...images] });
 			})
 			.catch(err => { 
 				console.error('Some images failed to load', err);
