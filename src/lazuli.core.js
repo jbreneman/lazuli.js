@@ -139,9 +139,9 @@ Lazuli.prototype = {
 			// Push all promises into an array so we can watch when all are finished
 			loaded.push(this._load(image)
 				.then((loaded) => {
-					if(image.tagName === 'IMG') {
+					if(image.tagName === 'IMG' && this.options.img) {
 						image.src = loaded.currentSrc || loaded.src;
-					} else {
+					} else if(this.options.background) {
 						this._background(image, loaded);
 					}
 				})
