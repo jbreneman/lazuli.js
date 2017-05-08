@@ -144,7 +144,6 @@ Lazuli.prototype = {
 			if (image.tagName === 'IMG') shown = this.options.img;
 			if (image.tagName !== 'IMG') shown = this.options.background;
 
-			console.log(shown);
 			if (shown) {
 				// Push all promises into an array so we can watch when all are finished
 				loaded.push(this._load(image)
