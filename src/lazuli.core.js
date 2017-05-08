@@ -7,7 +7,8 @@ function Lazuli() {
 	let options = {
 		className: 'lazuli',
 		background: true,
-		img: true
+		img: true,
+		fancy: true
 	};
 
 	[].slice.call(arguments).forEach((arg) => {
@@ -65,20 +66,25 @@ Lazuli.prototype = {
 	},
 
 	_background: function(_this, image) {
-		let computed = window.getComputedStyle(image, null);
-		if (computed.position === 'static') { image.style.position = 'relative'; }
-		if (computed.zIndex === 'auto') { image.style.zIndex = '0'; }
+		if (this.options.fancy) {
+			let computed = window.getComputedStyle(image, null);
+			if (computed.position === 'static') { image.style.position = 'relative'; }
+			if (computed.zIndex === 'auto') { image.style.zIndex = '0'; }
+			
+			const child = this._createInside(_this.currentSrc || _this.src);
+			image.appendChild(child);
+
+			// Force a redraw
+			image.firstElementChild.offsetHeight;
+
+			image.querySelector('.lazuli-inner').style.opacity = '1';
+			window.setTimeout(()=> {
+				image.style.backgroundImage = 'none';
+			}, 240);
+		} else {
+			image.style.backgroundImage = `url(${ _this.currentSrc || _this.src })`;
+		}
 		
-		const child = this._createInside(_this.currentSrc || _this.src);
-		image.appendChild(child);
-
-		// Force a redraw
-		image.firstElementChild.offsetHeight;
-
-		image.querySelector('.lazuli-inner').style.opacity = '1';
-		window.setTimeout(()=> {
-			image.style.backgroundImage = 'none';
-		}, 240);
 		image.classList.add('loaded');
 	},
 
