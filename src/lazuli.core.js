@@ -10,7 +10,7 @@ if (!window.Promise) {
 
 function Lazuli() {
 	let options = {
-		className: 'lazuli',
+		selector: '.lazuli',
 		background: true,
 		img: true,
 		fancy: true,
@@ -131,7 +131,7 @@ Lazuli.prototype = {
 	// Public
 	//
 	init: function(options) {
-		const images = document.querySelectorAll(`.${ options.className }`);
+		const images = document.querySelectorAll(options.selector);
 		let loaded = [];
 
 		// Convert images domlist to array and fire off load requests
