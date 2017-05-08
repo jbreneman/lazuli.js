@@ -8,7 +8,9 @@ function Lazuli() {
 		className: 'lazuli',
 		background: true,
 		img: true,
-		fancy: true
+		fancy: true,
+		load: null,
+		finished: null
 	};
 
 	[].slice.call(arguments).forEach((arg) => {
@@ -68,7 +70,7 @@ Lazuli.prototype = {
 		const element = document.createElement('div');
 		element.classList.add('lazuli-inner');
 		element.setAttribute('style', styles);
-		
+
 		return element;
 	},
 
@@ -92,11 +94,16 @@ Lazuli.prototype = {
 			image.style.backgroundImage = `url(${ _this.currentSrc || _this.src })`;
 		}
 		
+		// Fire user defined callback
+		if(typeof this.options.load === 'function') this.options.load({ image: image });
 		image.classList.add('loaded');
 	},
 
 	_img: function(_this, image) {
 		image.src = _this.currentSrc || _this.src;
+
+		// Fire user defined callback
+		if(typeof this.options.load === 'function') this.options.load({ image: image });
 		image.classList.add('loaded');
 	},
 
@@ -108,7 +115,7 @@ Lazuli.prototype = {
 
 		[].slice.call(images).forEach((image) => {
 			if(image.tagName === 'IMG') {
-				this._load(image, this._img);
+				this._load(image, this._img.bind(this));
 			} else {
 				this._load(image, this._background.bind(this));
 			}
