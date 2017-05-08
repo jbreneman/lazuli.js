@@ -1,4 +1,4 @@
-import 'isobject';
+import isObject from 'isobject';
 import 'es6-object-assign/auto';
 
 'use strict';
@@ -13,7 +13,7 @@ function Lazuli() {
 
 	[].slice.call(arguments).forEach((arg) => {
 		if(typeof arg === 'string') options.className = arg;
-		if(isobject(arg)) options = Object.assign({}, options, arg);
+		if(isObject(arg)) options = Object.assign({}, options, arg);
 	});
 
 	this.options = options;
@@ -29,17 +29,23 @@ Lazuli.prototype = {
 
 		loader.addEventListener('load', function() {
 			if(typeof onload === 'function') onload(this, image);
+
+			// Clean up this listener and dom
 			this.removeEventListener('load', this);
+			for (const key in Object.assign({}, image.dataset)) {
+				delete image.dataset[key];
+			}
 		});
 
-		if (image.dataset.srcset !== undefined) {
-			loader.setAttribute('srcset', image.dataset.srcset);
+		for (const key in Object.assign({}, image.dataset)) {
+			// Loop through dataset and move properties over to our loader
+			// leaving the src property for last since we want that to go last
+			if (key !== 'src') {
+				loader.setAttribute(key, image.dataset[key]);
+			}
 		}
 
-		if (image.dataset.sizes !== undefined) {
-			loader.setAttribute('sizes', image.dataset.sizes);
-		}
-
+		// Kick off loading the image
 		loader.setAttribute('src', image.dataset.src);
 	},
 
@@ -62,6 +68,7 @@ Lazuli.prototype = {
 		const element = document.createElement('div');
 		element.classList.add('lazuli-inner');
 		element.setAttribute('style', styles);
+		
 		return element;
 	},
 
