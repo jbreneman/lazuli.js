@@ -19,6 +19,7 @@ function Lazuli() {
 	});
 
 	this.options = options;
+	this.loaded = 0;
 	this.init(options);
 };
 
@@ -28,9 +29,16 @@ Lazuli.prototype = {
 	//
 	_load: function(image, onload) {
 		const loader = document.createElement('img');
+		const self = this;
 
 		loader.addEventListener('load', function() {
-			if(typeof onload === 'function') onload(this, image);
+			self.loaded++;
+			if (typeof onload === 'function') onload(this, image);
+
+			// Fire user defined callbacks and add loaded class
+			if(typeof self.options.load === 'function') self.options.load({ image: image });
+			if(self.loaded === self.total && typeof self.options.finished === 'function') self.options.finished({ image: image });
+			image.classList.add('loaded');
 
 			// Clean up this listener and dom
 			this.removeEventListener('load', this);
@@ -93,18 +101,10 @@ Lazuli.prototype = {
 		} else {
 			image.style.backgroundImage = `url(${ _this.currentSrc || _this.src })`;
 		}
-		
-		// Fire user defined callback
-		if(typeof this.options.load === 'function') this.options.load({ image: image });
-		image.classList.add('loaded');
 	},
 
 	_img: function(_this, image) {
 		image.src = _this.currentSrc || _this.src;
-
-		// Fire user defined callback
-		if(typeof this.options.load === 'function') this.options.load({ image: image });
-		image.classList.add('loaded');
 	},
 
 	//
@@ -113,9 +113,11 @@ Lazuli.prototype = {
 	init: function(options) {
 		const images = document.querySelectorAll(`.${ options.className }`);
 
+		this.total = images.length;
+
 		[].slice.call(images).forEach((image) => {
 			if(image.tagName === 'IMG') {
-				this._load(image, this._img.bind(this));
+				this._load(image, this._img);
 			} else {
 				this._load(image, this._background.bind(this));
 			}
