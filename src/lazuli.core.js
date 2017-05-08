@@ -16,11 +16,15 @@ function Lazuli() {
 		fancy: false,
 		load: null,
 		finished: null
-	};
+	},
+	selector;
 
 	[...arguments].forEach((arg) => {
-		if(typeof arg === 'string') options.className = arg;
-		if(isObject(arg)) options = Object.assign({}, options, arg);
+		if(typeof arg === 'string') options.selector = selector = arg;
+		if(isObject(arg)) {
+			options = Object.assign({}, options, arg);
+			if (!arg.selector && selector) options.selector = selector;
+		}
 	});
 
 	this.options = options;
@@ -136,25 +140,32 @@ Lazuli.prototype = {
 
 		// Convert images domlist to array and fire off load requests
 		[...images].forEach((image) => {
-			// Push all promises into an array so we can watch when all are finished
-			loaded.push(this._load(image)
-				.then((loaded) => {
-					if(image.tagName === 'IMG' && this.options.img) {
-						image.src = loaded.currentSrc || loaded.src;
-					} else if(this.options.background) {
-						this._background(image, loaded);
-					}
-				})
-				.catch((err) => {
-					console.error('Failed to load image: ', err);
-				})
-			);
+			let shown = true;
+			if (image.tagName === 'IMG') shown = this.options.img;
+			if (image.tagName !== 'IMG') shown = this.options.background;
+
+			console.log(shown);
+			if (shown) {
+				// Push all promises into an array so we can watch when all are finished
+				loaded.push(this._load(image)
+					.then((loaded) => {
+						if(image.tagName === 'IMG') {
+							image.src = loaded.currentSrc || loaded.src;
+						} else {
+							this._background(image, loaded);
+						}
+					})
+					.catch((err) => {
+						console.error('Failed to load image: ', err);
+					})
+				);
+			}
 		});
 
 		// Fire off the final callback whenever all images are loaded
 		Promise.all(loaded)
 			.then(res => { 
-				if(typeof this.options.finished === 'function') this.options.finished({ images: [...images] });
+				if(typeof this.options.finished === 'function') this.options.finished({ images: [...loaded] });
 			})
 			.catch(err => { 
 				console.error('Some images failed to load', err);
