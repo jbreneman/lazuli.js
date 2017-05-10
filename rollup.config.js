@@ -5,7 +5,7 @@ import uglify from 'rollup-plugin-uglify';
 
 export default {
   entry: './src/lazuli.core.js',
-  format: 'iife',
+  format: 'umd',
   plugins: [
   	resolve(),
     commonjs(),

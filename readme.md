@@ -4,7 +4,7 @@ Lazuli is a ES6 rewrite/mashup of lazzyload and a lazyload module for background
 
 ## Installation
 
-Currently Lazuli only supports being set and used as a global variable. In the future an ES6 import will be supported, probably.
+Currently Lazuli supports being used as a global object, and _should_ support ES6 and commonjs modules as well.
 
 ### How to install
 
