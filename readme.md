@@ -64,7 +64,8 @@ const lazy = new Lazuli({
 	img: true,
 	fancy: false,
 	load: null,
-	finished: null
+	finished: null,
+	events: false
 }
 ```
 
@@ -99,6 +100,21 @@ Callback that runs when all images have loaded. Returns an object with data:
 	images: [<Element>, <Element>]
 }
 ```
+
+#### events
+
+Set to true to enable events.
+
+```
+document.addEventListener('lazuli:load', (e) => {
+	console.log(e.detail.image); // Returns the image loaded
+});
+
+document.addEventListener('lazuli:finished', (e) => {
+	console.log(e.detail.images) // Returns an array of all images
+});
+```
+
 ## Contributing
 
 Submit a PR and tag Jesse. :)

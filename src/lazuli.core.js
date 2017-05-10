@@ -15,7 +15,8 @@ function Lazuli() {
 		img: true,
 		fancy: false,
 		load: null,
-		finished: null
+		finished: null,
+		events: false
 	},
 	selector;
 
@@ -134,6 +135,11 @@ Lazuli.prototype = {
 		}
 	},
 
+	_fireEvent: function(name, data) {
+		const event = new CustomEvent(name, { detail: data });
+		document.dispatchEvent(event);
+	},
+
 	//
 	// Public
 	//
@@ -146,8 +152,8 @@ Lazuli.prototype = {
 			let shown = true;
 
 			// Turn off specific types based on options
-			if (image.tagName === 'IMG') shown = this.options.img;
-			if (image.tagName !== 'IMG') shown = this.options.background;
+			if (image.tagName === 'IMG') shown = options.img;
+			if (image.tagName !== 'IMG') shown = options.background;
 
 			if (shown) {
 				// Push all promises into an array so we can watch when all are finished
@@ -158,8 +164,11 @@ Lazuli.prototype = {
 						} else {
 							this._background(image, loaded);
 						}
+
+						if (options.events) this._fireEvent('lazuli:load', { image: image });
 					})
 					.catch((err) => {
+						if (options.events) this._fireEvent('lazuli:failed', { image: image });
 						console.error('Failed to load image: ', err);
 					})
 				);
@@ -169,9 +178,11 @@ Lazuli.prototype = {
 		// Fire off the final callback whenever all images are loaded
 		Promise.all(loaded)
 			.then(res => { 
-				if(typeof this.options.finished === 'function') this.options.finished({ images: [...loaded] });
+				if(typeof options.finished === 'function') options.finished({ images: [...images] });
+				if (options.events) this._fireEvent('lazuli:finished', { images: [...images] });
 			})
 			.catch(err => { 
+				if (options.events) this._fireEvent('lazuli:finished', { images: [...images] });
 				console.error('Some images failed to load', err);
 			});
 	}
