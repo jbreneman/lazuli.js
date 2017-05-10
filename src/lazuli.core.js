@@ -20,7 +20,10 @@ function Lazuli() {
 	selector;
 
 	[...arguments].forEach((arg) => {
+		// Making sure we always use the string provided as the selector
 		if(typeof arg === 'string') options.selector = selector = arg;
+
+		// If options object
 		if(isObject(arg)) {
 			options = Object.assign({}, options, arg);
 			if (!arg.selector && selector) options.selector = selector;
@@ -141,6 +144,8 @@ Lazuli.prototype = {
 		// Convert images domlist to array and fire off load requests
 		[...images].forEach((image) => {
 			let shown = true;
+
+			// Turn off specific types based on options
 			if (image.tagName === 'IMG') shown = this.options.img;
 			if (image.tagName !== 'IMG') shown = this.options.background;
 
