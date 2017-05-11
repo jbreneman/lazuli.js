@@ -21,6 +21,7 @@
     "rollup-watch": "^3.2.2"
   },
   "dependencies": {
+    "array.from": "^1.0.3",
     "es6-object-assign": "^1.1.0",
     "isobject": "^3.0.0"
   }

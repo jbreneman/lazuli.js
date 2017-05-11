@@ -1,12 +1,15 @@
 import Promise from 'promise-polyfill';
 import isObject from 'isobject';
 import 'es6-object-assign/auto';
+import ArrayFrom from 'array.from';
 
 'use strict';
 
 if (!window.Promise) {
 	window.Promise = Promise;
 }
+
+ArrayFrom.shim();
 
 function Lazuli() {
 	let options = {
