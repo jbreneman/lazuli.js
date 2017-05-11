@@ -21,7 +21,7 @@
     "rollup-watch": "^3.2.2"
   },
   "dependencies": {
-    "array.from": "^1.0.3",
+    "array-from": "^2.1.1",
     "es6-object-assign": "^1.1.0",
     "isobject": "^3.0.0",
     "promise-polyfill": "^6.0.2"
