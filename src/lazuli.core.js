@@ -20,7 +20,6 @@ function Lazuli() {
 		img: true,
 		fancy: false,
 		load: null,
-		finished: null,
 		events: false
 	},
 	selector;
@@ -37,7 +36,18 @@ function Lazuli() {
 	});
 
 	this.options = options;
-	this.init(options);
+
+	// Return a promise with all images once load is finished
+	return new Promise((resolve, reject) => {
+		this.init(options)
+			.then((res) => {
+				resolve(res);
+			})
+			.catch((err) => {
+				reject(err);
+			});
+	});
+	
 };
 
 Lazuli.prototype = {
@@ -180,16 +190,20 @@ Lazuli.prototype = {
 			}
 		});
 
-		// Fire off the final callback whenever all images are loaded
-		Promise.all(loaded)
-			.then(res => { 
-				if(typeof options.finished === 'function') options.finished({ images: [...images] });
-				if (options.events) this._fireEvent('lazuli:finished', { images: [...images] });
-			})
-			.catch(err => { 
-				if (options.events) this._fireEvent('lazuli:finished', { images: [...images] });
-				console.error('Some images failed to load', err);
-			});
+		return new Promise((resolve, reject) => {
+			// Return a promise to the main lazuli function and fire off events
+			Promise.all(loaded)
+				.then(res => {
+					if (options.events) this._fireEvent('lazuli:finished', { images: [...images] });
+					resolve({ images: [...images] });
+					
+				})
+				.catch(err => { 
+					if (options.events) this._fireEvent('lazuli:finished', { images: [...images] });
+					console.error('Some images failed to load', err);
+					reject(({ images: [...images] }));
+				});
+		});
 	}
 };
 

@@ -30,7 +30,7 @@ Lazuli also supports background images using the exact same syntax, so this will
 </div>
 ```
 
-Lazuli trys to stay out of the way of your styles, meaning you'll need to set things like background-size like you would normally.
+Lazuli tries to stay out of the way of your styles, meaning you'll need to set things like background-size like you would normally.
 
 ### In your Javascript
 
@@ -55,6 +55,18 @@ const lazy = new Lazuli({
 });
 ```
 
+Lazuli returns a promise that resolves once every image is loaded. You can use this to kick off other things once images are loaded or sequentially load groups of images:
+
+```
+new Lazuli('.primary-images').then((res) => {
+	return new Lazuli('.secondary-images');
+}).then((res) => {
+	return new Lazuli('.tertiary-images');
+}).catch((err) => {
+	console.log('Whoops, something didn't load!', err);
+});
+```
+
 ## Available options
 
 ```
@@ -64,7 +76,6 @@ const lazy = new Lazuli({
 	img: true,
 	fancy: false,
 	load: null,
-	finished: null,
 	events: false
 }
 ```
