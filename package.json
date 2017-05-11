@@ -23,6 +23,7 @@
   "dependencies": {
     "array.from": "^1.0.3",
     "es6-object-assign": "^1.1.0",
-    "isobject": "^3.0.0"
+    "isobject": "^3.0.0",
+    "promise-polyfill": "^6.0.2"
   }
 }
