@@ -82,7 +82,7 @@ Lazuli.prototype = {
 					image.classList.add('loaded');
 
 					// Clean up dom
-					for (const key in Object.assign({}, image.dataset)) {
+					for (const key in [...image.dataset]) {
 						delete image.dataset[key];
 					}
 
@@ -99,7 +99,7 @@ Lazuli.prototype = {
 
 	_createInside(image) {
 		const styles = `
-			background-image: url(${ image });
+			background-image: url(${image});
 			background-position: inherit;
 			background-size: inherit;
 			background-repeat: inherit;
@@ -121,7 +121,7 @@ Lazuli.prototype = {
 
 	_background(image, loaded) {
 		if (this.options.fancy) {
-			let computed = window.getComputedStyle(image, null);
+			const computed = window.getComputedStyle(image, null);
 			if (computed.position === 'static') { image.style.position = 'relative'; }
 			if (computed.zIndex === 'auto') { image.style.zIndex = '0'; }
 
@@ -133,6 +133,7 @@ Lazuli.prototype = {
 
 			image.querySelector('.lazuli-inner').style.opacity = '1';
 			image.style.filter = '';
+
 			window.setTimeout(() => {
 				image.style.backgroundImage = 'none';
 			}, 240);
@@ -146,7 +147,7 @@ Lazuli.prototype = {
 	//
 	init(options) {
 		const images = document.querySelectorAll(options.selector);
-		let loaded = [];
+		const loaded = [];
 
 		// Convert images domlist to array and fire off load requests
 		[...images].forEach((image) => {
