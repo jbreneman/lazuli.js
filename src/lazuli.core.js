@@ -19,8 +19,7 @@ function Lazuli() {
 		background: true,
 		img: true,
 		fancy: false,
-		load: null,
-		events: false
+		load: null
 	},
 	selector;
 
@@ -47,7 +46,7 @@ function Lazuli() {
 				reject(err);
 			});
 	});
-	
+
 };
 
 Lazuli.prototype = {
@@ -134,7 +133,7 @@ Lazuli.prototype = {
 			let computed = window.getComputedStyle(image, null);
 			if (computed.position === 'static') { image.style.position = 'relative'; }
 			if (computed.zIndex === 'auto') { image.style.zIndex = '0'; }
-			
+
 			const child = this._createInside(loaded.currentSrc || loaded.src);
 			image.appendChild(child);
 
@@ -148,11 +147,6 @@ Lazuli.prototype = {
 		} else {
 			image.style.backgroundImage = `url(${ loaded.currentSrc || loaded.src })`;
 		}
-	},
-
-	_fireEvent: function(name, data) {
-		const event = new CustomEvent(name, { detail: data });
-		document.dispatchEvent(event);
 	},
 
 	//
@@ -179,11 +173,8 @@ Lazuli.prototype = {
 						} else {
 							this._background(image, loaded);
 						}
-
-						if (options.events) this._fireEvent('lazuli:load', { image: image });
 					})
 					.catch((err) => {
-						if (options.events) this._fireEvent('lazuli:failed', { image: image });
 						console.error('Failed to load image: ', err);
 					})
 				);
@@ -191,15 +182,13 @@ Lazuli.prototype = {
 		});
 
 		return new Promise((resolve, reject) => {
-			// Return a promise to the main lazuli function and fire off events
+			// Return a promise to the main lazuli function
 			Promise.all(loaded)
 				.then(res => {
-					if (options.events) this._fireEvent('lazuli:finished', { images: [...images] });
 					resolve({ images: [...images] });
-					
+
 				})
-				.catch(err => { 
-					if (options.events) this._fireEvent('lazuli:finished', { images: [...images] });
+				.catch(err => {
 					console.error('Some images failed to load', err);
 					reject(({ images: [...images] }));
 				});

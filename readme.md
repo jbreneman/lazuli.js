@@ -1,6 +1,6 @@
 # Lazuli
 
-Lazuli is a ES6 rewrite/mashup of lazzyload and a lazyload module for background images I've been working on using tons of cool stuff because we can.
+Lazuli is a promise based image lazyloader that works for both images and background images.
 
 ## Installation
 
@@ -75,8 +75,7 @@ new Lazuli('.primary-images').then((res) => {
 	background: true,
 	img: true,
 	fancy: false,
-	load: null,
-	events: false
+	load: null
 }
 ```
 
@@ -112,20 +111,6 @@ Callback that runs when all images have loaded. Returns an object with data:
 }
 ```
 
-#### events
-
-Set to true to enable events.
-
-```
-document.addEventListener('lazuli:load', (e) => {
-	console.log(e.detail.image); // Returns the image loaded
-});
-
-document.addEventListener('lazuli:finished', (e) => {
-	console.log(e.detail.images) // Returns an array of all images
-});
-```
-
 ## Contributing
 
-Submit a PR and tag Jesse. :)
+Submit a PR!
