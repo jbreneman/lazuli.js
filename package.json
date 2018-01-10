@@ -1,5 +1,5 @@
 {
-  "name": "lazuli",
+  "name": "lazuli-js",
   "version": "1.2.0",
   "description": "A lazy loading library",
   "main": "dist/lazuli.cjs.js",
