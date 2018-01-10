@@ -91,7 +91,7 @@ Expects a boolean. Setting background to false means it will only look for <img>
 
 #### fancy
 
-Background images currently support a fancy fade in animation (think medium.com headers). This is still a little experimental—it currently works pretty well but sometimes will break things since it injects it's own <div> inside the element you attach it to. Highly recommend giving it a shot though! Adding more configuration for this is in the roadmap.
+Background images currently support a fancy fade in animation (think medium.com headers). This is still a little experimental—it currently works pretty well but sometimes will break things since it injects it's own `<div>` inside the element you attach it to. Highly recommend giving it a shot though! Adding more configuration for this is in the roadmap.
 
 #### load
 
