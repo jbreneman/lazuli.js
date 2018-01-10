@@ -19,7 +19,7 @@ Lazuli uses data attributes in place of actual attributes. Basically, take the n
 ```
 <img class="lazuli" data-src="image.jpg" alt="Basic example">
 
-<img class="lazuli" data-src="image.jpg" srcset="image-200.jpg 200w, image-400.jpg 400w, image-800.jpg 800w" sizes="(max-width: 680px) 100vw, 50vw" alt="Srcset and sizes!">
+<img class="lazuli" data-src="image.jpg" data-srcset="image-200.jpg 200w, image-400.jpg 400w, image-800.jpg 800w" data-sizes="(max-width: 680px) 100vw, 50vw" alt="Srcset and sizes!">
 ```
 
 Lazuli also supports background images using the exact same syntax, so this will just work:
