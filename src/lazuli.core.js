@@ -53,7 +53,7 @@ Lazuli.prototype = {
 	//
 	// Private
 	//
-	_loadImage: function(image) {
+	_loadImage(image) {
 		return new Promise((resolve, reject) => {
 			const loader = document.createElement('img');
 
@@ -67,7 +67,7 @@ Lazuli.prototype = {
 				reject(this);
 			});
 
-			for (const key in Object.assign({}, image.dataset)) {
+			for (const key in [...image.dataset]) {
 				// Loop through dataset and move properties over to our loader
 				// leaving the src property for last since we want that to go last
 				if (key !== 'src') {
@@ -80,7 +80,7 @@ Lazuli.prototype = {
 		});
 	},
 
-	_load: function(image) {
+	_load(image) {
 		return new Promise((resolve, reject) => {
 			this._loadImage(image)
 				.then((loaded)=> {
@@ -105,7 +105,7 @@ Lazuli.prototype = {
 		});
 	},
 
-	_createInside: function(image) {
+	_createInside(image) {
 		const styles = `
 			background-image: url(${ image });
 			background-position: inherit;
@@ -117,8 +117,7 @@ Lazuli.prototype = {
 			left: 0;
 			top: 0;
 			opacity: 0;
-			transition:
-			opacity .24s ease;
+			transition: opacity .24s ease;
 			z-index: -1;
 		`;
 		const element = document.createElement('div');
@@ -128,7 +127,7 @@ Lazuli.prototype = {
 		return element;
 	},
 
-	_background: function(image, loaded) {
+	_background(image, loaded) {
 		if (this.options.fancy) {
 			let computed = window.getComputedStyle(image, null);
 			if (computed.position === 'static') { image.style.position = 'relative'; }
@@ -141,7 +140,8 @@ Lazuli.prototype = {
 			image.firstElementChild.offsetHeight;
 
 			image.querySelector('.lazuli-inner').style.opacity = '1';
-			window.setTimeout(()=> {
+			image.style.filter = '';
+			window.setTimeout(() => {
 				image.style.backgroundImage = 'none';
 			}, 240);
 		} else {
@@ -152,7 +152,7 @@ Lazuli.prototype = {
 	//
 	// Public
 	//
-	init: function(options) {
+	init(options) {
 		const images = document.querySelectorAll(options.selector);
 		let loaded = [];
 
@@ -165,11 +165,16 @@ Lazuli.prototype = {
 			if (image.tagName !== 'IMG') shown = options.background;
 
 			if (shown) {
+				if (this.options.fancy) {
+					image.style.filter = 'blur(3px)';
+				}
+
 				// Push all promises into an array so we can watch when all are finished
 				loaded.push(this._load(image)
 					.then((loaded) => {
 						if(image.tagName === 'IMG') {
 							image.src = loaded.currentSrc || loaded.src;
+							image.style.filter = '';
 						} else {
 							this._background(image, loaded);
 						}
