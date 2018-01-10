@@ -5,6 +5,7 @@ import ArrayFrom from 'array-from';
 
 'use strict';
 
+// Polyfilling if needed
 if (!window.Promise) {
 	window.Promise = Promise;
 }
@@ -14,25 +15,17 @@ if (!Array.from) {
 }
 
 function Lazuli() {
+	const [ arg ] = arguments;
 	let options = {
 		selector: '.lazuli',
 		background: true,
 		img: true,
 		fancy: false,
 		load: null
-	},
-	selector;
+	};
 
-	[...arguments].forEach((arg) => {
-		// Making sure we always use the string provided as the selector
-		if(typeof arg === 'string') options.selector = selector = arg;
-
-		// If options object
-		if(isObject(arg)) {
-			options = Object.assign({}, options, arg);
-			if (!arg.selector && selector) options.selector = selector;
-		}
-	});
+	if(typeof arg === 'string') options.selector = arg;
+	if(isObject(arg)) options = Object.assign({}, options, arg);
 
 	this.options = options;
 
@@ -46,7 +39,6 @@ function Lazuli() {
 				reject(err);
 			});
 	});
-
 };
 
 Lazuli.prototype = {
