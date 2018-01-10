@@ -1,20 +1,8 @@
-import Promise from 'promise-polyfill';
 import isObject from 'isobject';
-import 'es6-object-assign/auto';
-import ArrayFrom from 'array-from';
 
 'use strict';
 
-// Polyfilling if needed
-if (!window.Promise) {
-	window.Promise = Promise;
-}
-
-if (!Array.from) {
-	Array.from = ArrayFrom;
-}
-
-function Lazuli() {
+const Lazuli = function () {
 	const [ arg ] = arguments;
 	let options = {
 		selector: '.lazuli',
@@ -194,4 +182,4 @@ Lazuli.prototype = {
 	}
 };
 
-window.Lazuli = Lazuli;
+export default Lazuli;

@@ -1,18 +1,42 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
-import uglify from 'rollup-plugin-uglify';
+import pkg from './package.json';
 
-export default {
-  entry: './src/lazuli.core.js',
-  format: 'umd',
-  plugins: [
-  	resolve(),
-    commonjs(),
-  	babel({
-  	  exclude: 'node_modules/**'
-  	}),
-  	uglify()
-  ],
-  dest: './dist/lazuli.min.js'
-};
+export default [
+  {
+    input: './src/lazuli.core.js',
+    output: {
+      name: 'Lazuli',
+      file: pkg.browser,
+      format: 'umd',
+    },
+    plugins: [
+      resolve(),
+      commonjs(),
+      babel({
+        exclude: 'node_modules/**'
+      })
+    ]
+  },
+  {
+    input: './src/lazuli.core.js',
+    output: [
+      {
+        file: pkg.main,
+        format: 'cjs'
+      },
+      {
+        file: pkg.module,
+        format: 'es'
+      }
+    ],
+    plugins: [
+      resolve(),
+      commonjs(),
+      babel({
+        exclude: 'node_modules/**'
+      })
+    ]
+  }
+];

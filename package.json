@@ -1,8 +1,10 @@
 {
   "name": "lazuli",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A lazy loading library",
-  "main": "dist/lazuli.min.js",
+  "main": "dist/lazuli.cjs.js",
+  "module": "dist/lazuli.esm.js",
+  "browser": "dist/lazuli.umd.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
@@ -13,17 +15,13 @@
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-latest": "^6.24.1",
-    "rollup": "^0.41.6",
+    "rollup": "^0.53.4",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^1.0.2",
     "rollup-watch": "^3.2.2"
   },
   "dependencies": {
-    "array-from": "^2.1.1",
-    "es6-object-assign": "^1.1.0",
-    "isobject": "^3.0.0",
-    "promise-polyfill": "^6.0.2"
+    "isobject": "^3.0.0"
   }
 }

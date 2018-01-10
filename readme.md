@@ -4,13 +4,15 @@ Lazuli is a promise based image lazyloader that works for both images and backgr
 
 ## Installation
 
-Currently Lazuli supports being used as a global object, and _should_ support ES6 and commonjs modules as well.
-
-### How to install
-
-Copy `lazuli.min.js` from /dist into your project, preferably into a /libs folder.
+`npm i -S lazuli-js` or `yarn add lazuli-js`.
 
 ## Usage
+
+ES modules: `import Lazuli from 'lazuli-js';`
+CJS modules: `var Lazuli = require('lazuli-js');`
+Global: Make sure it's getting included in your build somehow, then use as normal.
+
+There are 3 different files being built, CommonJS, ES6 module, and UMD. You may need to tell your bundler to grab the right file if you're running into import issues.
 
 ### In your HTML
 
