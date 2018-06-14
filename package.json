@@ -1,6 +1,6 @@
 {
   "name": "@jbreneman/lazuli-js",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A lazy loading library",
   "main": "dist/lazuli.cjs.js",
   "module": "dist/lazuli.esm.js",
