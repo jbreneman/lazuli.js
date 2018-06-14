@@ -3,11 +3,11 @@
 /*!
  * isobject <https://github.com/jonschlinkert/isobject>
  *
- * Copyright (c) 2014-2015, Jon Schlinkert.
- * Licensed under the MIT License.
+ * Copyright (c) 2014-2017, Jon Schlinkert.
+ * Released under the MIT License.
  */
 
-var index = function isObject(val) {
+var isobject = function isObject(val) {
   return val != null && typeof val === 'object' && Array.isArray(val) === false;
 };
 
@@ -36,7 +36,7 @@ var Lazuli = function Lazuli() {
 	};
 
 	if (typeof arg === 'string') options.selector = arg;
-	if (index(arg)) options = Object.assign({}, options, arg);
+	if (isobject(arg)) options = Object.assign({}, options, arg);
 
 	this.options = options;
 
@@ -68,13 +68,13 @@ Lazuli.prototype = {
 				reject(this);
 			});
 
-			for (var key in [].concat(toConsumableArray(image.dataset))) {
-				// Loop through dataset and move properties over to our loader
-				// leaving the src property for last since we want that to go last
+			// Loop through dataset and move properties over to our loader
+			// leaving the src property for last since we want that to go last
+			Object.keys(image.dataset).forEach(function (key) {
 				if (key !== 'src') {
 					loader.setAttribute(key, image.dataset[key]);
 				}
-			}
+			});
 
 			// Kick off loading the image
 			loader.setAttribute('src', image.dataset.src);

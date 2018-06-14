@@ -47,13 +47,13 @@ Lazuli.prototype = {
 				reject(this);
 			});
 
-			for (const key in [...image.dataset]) {
-				// Loop through dataset and move properties over to our loader
-				// leaving the src property for last since we want that to go last
+			// Loop through dataset and move properties over to our loader
+			// leaving the src property for last since we want that to go last
+			Object.keys(image.dataset).forEach((key) => {
 				if (key !== 'src') {
 					loader.setAttribute(key, image.dataset[key]);
 				}
-			}
+			});
 
 			// Kick off loading the image
 			loader.setAttribute('src', image.dataset.src);
