@@ -70,9 +70,9 @@ Lazuli.prototype = {
 					image.classList.add('loaded');
 
 					// Clean up dom
-					for (const key in [...image.dataset]) {
+					Object.keys(image.dataset).forEach((key) => {
 						delete image.dataset[key];
-					}
+					});
 
 					return loaded;
 				})
